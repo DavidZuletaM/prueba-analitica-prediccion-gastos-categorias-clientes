@@ -78,26 +78,28 @@ n_pipeline = Pipeline(
 
 # Creación de grilla de hiperparámetros
 param_grid = {
-    'RFRegressor__n_estimators': np.arange(50,301,50),
-    'RFRegressor__criterion': ['absolute_error','squared_error'],
-    'RFRegressor__max_depth': [3,5,10, 15, None]
+    'RFRegressor__n_estimators': [100, 150],
+    'RFRegressor__criterion': ['squared_error'],
+    'RFRegressor__max_depth': [15,20,None]
 }
 
 # Busqueda de los hiperparámetros
-rf_randomsearch = RandomizedSearchCV(
+rf_gridsearch = GridSearchCV(
     n_pipeline,
     param_grid,
-    n_iter = 50,
-    cv=7
+    cv=7,
+    refit=True,
+    verbose=2
 )
 
 # Entrenamiento del modelo
-rf_randomsearch.fit(X_train,y_train)
+rf_gridsearch.fit(X_train,y_train)
 
 # Generar resultados de predicciones
-y_pred = rf_randomsearch.best_estimator_.predict(X_test)
+y_pred = rf_gridsearch.best_estimator_.predict(X_test)
 
 # Cálculo de Métricas
 mse= mean_squared_error(y_test, y_pred)
+print(mse)
 r2= r2_score(y_test,y_pred)
 print(r2)
