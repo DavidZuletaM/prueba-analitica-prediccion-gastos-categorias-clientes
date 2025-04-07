@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV
+from sklearn.model_selection import train_test_split, RandomizedSearchCV
 from sklearn.pipeline import Pipeline
 from sklearn.compose import make_column_transformer, make_column_selector
 from sklearn.preprocessing import MinMaxScaler, PolynomialFeatures
@@ -78,28 +78,28 @@ n_pipeline = Pipeline(
 
 # Creación de grilla de hiperparámetros
 param_grid = {
-    'RFRegressor__n_estimators': [100, 150],
-    'RFRegressor__criterion': ['squared_error'],
-    'RFRegressor__max_depth': [15,20,None]
+    'RFRegressor__n_estimators': np.arange(50,301,50),
+    'RFRegressor__criterion': ['absolute_error','squared_error'],
+    'RFRegressor__max_depth': [3,5,10, 15, None]
 }
 
 # Busqueda de los hiperparámetros
-rf_gridsearch = GridSearchCV(
+rf_randomsearch = RandomizedSearchCV(
     n_pipeline,
     param_grid,
-    cv=7,
-    refit=True,
-    verbose=2
+    n_iter = 50,
+    cv=7
 )
 
 # Entrenamiento del modelo
-rf_gridsearch.fit(X_train,y_train)
+rf_randomsearch.fit(X_train,y_train)
 
 # Generar resultados de predicciones
-y_pred = rf_gridsearch.best_estimator_.predict(X_test)
+y_pred = rf_randomsearch.best_estimator_.predict(X_test)
 
 # Cálculo de Métricas
 mse= mean_squared_error(y_test, y_pred)
-print(mse)
+rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+print(rmse)
 r2= r2_score(y_test,y_pred)
 print(r2)
