@@ -6,7 +6,7 @@ from sklearn.compose import make_column_transformer, make_column_selector
 from sklearn.preprocessing import MinMaxScaler, PolynomialFeatures
 from sklearn.feature_selection import SelectFromModel
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_percentage_error
 
 # Creación de los Dataframes
 df_transactions = pd.read_csv("data/transactions_data.csv",sep=",")
@@ -102,5 +102,7 @@ y_pred = rf_gridsearch.best_estimator_.predict(X_test)
 mse= mean_squared_error(y_test, y_pred)
 rmse = np.sqrt(mean_squared_error(y_test, y_pred))
 print(rmse)
+mape = mean_absolute_percentage_error(y_test, y_pred)
+print(mape)
 r2= r2_score(y_test,y_pred)
 print(r2)
